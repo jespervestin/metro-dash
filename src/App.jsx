@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { findSiteIdByName, getDepartures } from './lib/slTransport';
 import { getCurrentWeather, getWeatherTheme, DEV_WEATHER_SCENARIOS } from './lib/weather';
 import Weather from './components/Weather';
-import Calendar from './components/Calendar';
+// import Calendar from './components/Calendar';
 import Departures from './components/Departures';
 import './App.css';
 
@@ -129,7 +129,7 @@ function App() {
             : null
         }
       />
-      <Calendar />
+      {/* <Calendar /> */}
       <main className="app__main">
         <Departures
           departures={departures}
