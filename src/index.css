@@ -1,0 +1,74 @@
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.92);
+  background-color: #455a64;
+  --muted: rgba(255, 255, 255, 0.5);
+  --border: rgba(255, 255, 255, 0.08);
+  --panel-fallback: #455a64;
+  --app-bg: #1a1d23;
+  --radius-sm: 14px;
+  --radius-md: 22px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --transition-fast: 0.15s ease;
+  --transition-smooth: 0.35s ease;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: #455a64;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  height: 100%;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  background-color: #455a64;
+}
+
+#root {
+  height: 100%;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+/* Accessible focus outline */
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #1a1d23;
+    background-color: #e8eaed;
+    --muted: rgba(0, 0, 0, 0.5);
+    --border: rgba(0, 0, 0, 0.08);
+    --panel-fallback: #546e7a;
+    --app-bg: #e8eaed;
+  }
+}
