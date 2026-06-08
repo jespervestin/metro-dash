@@ -4,7 +4,9 @@
 const LAT = 59.36;
 const LON = 17.95;
 const TZ = 'Europe/Stockholm';
-const URL = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,weather_code,is_day&timezone=${encodeURIComponent(TZ)}`;
+// Called through the relative /api/weather path (proxied by Vite in dev,
+// server.js in prod) so old WebViews never have to do HTTPS to Open-Meteo.
+const URL = `/api/weather/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,weather_code,is_day&timezone=${encodeURIComponent(TZ)}`;
 
 /** WMO weather code → short label in Swedish. */
 const WEATHER_LABELS = {

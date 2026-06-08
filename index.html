@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
-    <meta name="viewport" content="width=758, height=1024, initial-scale=1.0, viewport-fit=cover" />
+    <!-- Lock the CSS layout viewport to 758px wide regardless of the device's
+         pixel ratio; the browser scales that to fill the panel. No initial-scale,
+         which would otherwise override the width on high-DPR screens. -->
+    <meta name="viewport" content="width=758, viewport-fit=cover" />
     <title>Nästa tunnelbana – Duvbo</title>
   </head>
   <body>

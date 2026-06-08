@@ -5,8 +5,11 @@
  *
  * Zero dependencies (Node built-ins only). It does two things:
  *   1. Serves the static build in ./dist
- *   2. Reverse-proxies /api/sl/* -> https://transport.integration.sl.se
- *      so SL departure calls work without CORS.
+ *   2. Reverse-proxies /api/sl/*      -> https://transport.integration.sl.se
+ *      and          /api/weather/* -> https://api.open-meteo.com
+ *      so the browser only ever makes same-origin HTTP calls. This avoids CORS
+ *      and, importantly, lets the (modern-TLS) Pi do the HTTPS handshake — old
+ *      WebViews with stale root certs can't reach these APIs directly.
  *
  * Binds to 0.0.0.0 so it is accessible over the network, not just localhost.
  */
@@ -21,6 +24,7 @@ const DIST = join(__dirname, 'dist');
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 const SL_HOST = 'transport.integration.sl.se';
+const WEATHER_HOST = 'api.open-meteo.com';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -34,11 +38,11 @@ const MIME = {
   '.woff2': 'font/woff2',
 };
 
-/** Reverse-proxy /api/sl/* to the SL Transport API. */
-function proxySL(req, res) {
-  const path = req.url.replace(/^\/api\/sl/, '') || '/';
+/** Reverse-proxy an /api/* path to an upstream HTTPS host. */
+function proxy(req, res, host, prefix) {
+  const path = req.url.replace(prefix, '') || '/';
   const upstream = https.request(
-    { hostname: SL_HOST, path, method: req.method, headers: { host: SL_HOST, accept: 'application/json' } },
+    { hostname: host, path, method: req.method, headers: { host, accept: 'application/json' } },
     (up) => {
       res.writeHead(up.statusCode || 502, up.headers);
       up.pipe(res);
@@ -46,7 +50,7 @@ function proxySL(req, res) {
   );
   upstream.on('error', (e) => {
     res.writeHead(502, { 'Content-Type': 'text/plain' });
-    res.end(`SL proxy error: ${e.message}`);
+    res.end(`proxy error (${host}): ${e.message}`);
   });
   req.pipe(upstream);
 }
@@ -82,7 +86,9 @@ async function serveStatic(req, res) {
 
 http
   .createServer((req, res) => {
-    if ((req.url || '').startsWith('/api/sl')) return proxySL(req, res);
+    const url = req.url || '';
+    if (url.startsWith('/api/sl')) return proxy(req, res, SL_HOST, /^\/api\/sl/);
+    if (url.startsWith('/api/weather')) return proxy(req, res, WEATHER_HOST, /^\/api\/weather/);
     serveStatic(req, res);
   })
   .listen(PORT, HOST, () => {

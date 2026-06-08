@@ -64,10 +64,10 @@ body {
 }
 
 #root {
-  width: var(--screen-w);
-  height: var(--screen-h);
-  max-width: 100vw;
-  max-height: 100vh;
+  /* Fill the (758px-locked) viewport rather than hardcoding pixels, so the
+     layout maps correctly whatever the device's real pixel ratio is. */
+  width: 100%;
+  height: 100vh;
   overflow: hidden;
   background-color: #fff;
 }

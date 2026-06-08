@@ -24,6 +24,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/sl/, ''),
       },
+      '/api/weather': {
+        target: 'https://api.open-meteo.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/weather/, ''),
+      },
       '/api/calendar.ics': {
         target: 'https://calendar.google.com',
         changeOrigin: true,
