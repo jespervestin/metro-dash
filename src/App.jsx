@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { findSiteIdByName, getDepartures } from './lib/slTransport';
-import { getCurrentWeather, getWeatherTheme, DEV_WEATHER_SCENARIOS } from './lib/weather';
+import { getCurrentWeather, DEV_WEATHER_SCENARIOS } from './lib/weather';
 import Weather from './components/Weather';
 // import Calendar from './components/Calendar';
 import Departures from './components/Departures';
 import './App.css';
 
-const PAGE_BG_FALLBACK = '#455a64';
+// E-ink: page is always plain white; the weather color theme is not used.
+const PAGE_BG_FALLBACK = '#ffffff';
 const DEV_MODE = import.meta.env.DEV;
 
 const STATION_NAME = 'Duvbo';
@@ -100,10 +101,7 @@ function App() {
       ? () => setDevScenarioIndex((i) => (i + 1) % DEV_WEATHER_SCENARIOS.length)
       : undefined;
 
-  const pageBgColor =
-    weather != null
-      ? getWeatherTheme(weather.code, weather.isDay).topColor
-      : PAGE_BG_FALLBACK;
+  const pageBgColor = PAGE_BG_FALLBACK;
 
   useEffect(() => {
     document.documentElement.style.backgroundColor = pageBgColor;

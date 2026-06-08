@@ -1,9 +1,10 @@
 /**
- * SL Transport API helpers. Uses Vite proxy in dev to avoid CORS; direct URL in production.
+ * SL Transport API helpers. Always called through the relative /api/sl path:
+ * - dev: proxied by Vite (vite.config.js)
+ * - prod: proxied by server.js
+ * This avoids CORS, since SL's API does not send CORS headers for browser calls.
  */
-const SL_BASE = import.meta.env.DEV
-  ? '/api/sl'
-  : 'https://transport.integration.sl.se';
+const SL_BASE = '/api/sl';
 
 export const METRO_MODES = new Set(['METRO']);
 
