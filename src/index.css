@@ -10,10 +10,10 @@
 
   /* Three solid ink tones for hierarchy (no opacity). */
   --ink: #000;
-  --ink-muted: #444;
-  --ink-faint: #777;
+  --ink-muted: #3a3a3a;
+  --ink-faint: #555;
   --line: #000;
-  --hairline: #999;
+  --hairline: #888;
 
   --radius-sm: 8px;
   --radius-md: 12px;

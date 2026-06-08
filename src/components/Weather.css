@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem 1.75rem;
+  padding: 2.75rem 1.5rem 2.5rem;
   width: 100%;
   color: #000;
   background: #fff;
@@ -36,24 +36,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0;
+  gap: 0.75rem;
   width: 100%;
 }
 
-.weather-panel__content > .weather-panel__temp {
-  margin-bottom: 0.25rem;
-}
-
-.weather-panel__content > .weather-panel__label {
-  margin-bottom: 0.75rem;
+/* Big temp next to the condition + humidity stack */
+.weather-panel__row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  width: 100%;
 }
 
 /* Dev badge: keep simple, ink-only */
 .weather-panel__dev-badge {
   position: absolute;
   top: 0.5rem;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 0.5rem;
   font: inherit;
   font-size: 0.8rem;
   font-weight: 600;
@@ -73,59 +73,50 @@
 }
 
 .weather-panel__temp {
-  font-size: 7rem;
-  font-weight: 300;
-  letter-spacing: -0.04em;
-  line-height: 1;
+  font-size: 8rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.85;
   margin: 0;
   color: #000;
+}
+
+.weather-panel__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  min-width: 0;
 }
 
 .weather-panel__label {
-  font-size: 2.1rem;
-  font-weight: 500;
+  font-size: 2.6rem;
+  font-weight: 700;
   margin: 0;
   color: #000;
-  letter-spacing: 0.01em;
-}
-
-.weather-panel__meta-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.4rem 0.75rem;
-  margin-top: 0.4rem;
-}
-
-.weather-panel__meta-row .weather-panel__meta,
-.weather-panel__meta-row .weather-panel__date {
-  position: static;
-  transform: none;
-  margin: 0;
-}
-
-.weather-panel__meta-sep {
-  color: var(--ink-faint);
-  padding: 0 0.35rem;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
 }
 
 .weather-panel__meta {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   color: var(--ink-muted);
-  font-weight: 400;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
+  margin: 0.4rem 0 0 0;
 }
 
 .weather-panel__date {
-  font-size: 1.25rem;
-  color: var(--ink-muted);
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-size: 1.6rem;
+  color: #000;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
 }
 
 .weather-panel__date--standalone {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .weather-panel__loading-text,

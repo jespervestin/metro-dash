@@ -61,20 +61,22 @@ export default function Weather({ data, loading, error, devMode, onCycleScenario
         )}
         {!isLoading && !isError && data && (
           <div className="weather-panel__content">
-            <p className="weather-panel__temp">
-              {data.temp != null ? `${Math.round(data.temp)}°` : '–'}
+            <p
+              className="weather-panel__date"
+              aria-label={new Date().toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' })}
+            >
+              {formatDateLine()}
             </p>
-            <p className="weather-panel__label">{data.label}</p>
-            <div className="weather-panel__meta-row">
-              {data.humidity != null && (
-                <>
-                  <span className="weather-panel__meta">{data.humidity}% luftfuktighet</span>
-                  <span className="weather-panel__meta-sep" aria-hidden>·</span>
-                </>
-              )}
-              <span className="weather-panel__date" aria-label={new Date().toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' })}>
-                {formatDateLine()}
-              </span>
+            <div className="weather-panel__row">
+              <p className="weather-panel__temp">
+                {data.temp != null ? `${Math.round(data.temp)}°` : '–'}
+              </p>
+              <div className="weather-panel__info">
+                <p className="weather-panel__label">{data.label}</p>
+                {data.humidity != null && (
+                  <p className="weather-panel__meta">{data.humidity}% luftfuktighet</p>
+                )}
+              </div>
             </div>
           </div>
         )}

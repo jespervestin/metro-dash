@@ -14,7 +14,12 @@
 .app__main {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 1.75rem 2rem 2rem;
+  /* Equal gap to both window edges; center the card vertically in the
+     remaining space so the gap above and below it is balanced. */
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   overflow: hidden;
   background: transparent;
   position: relative;
