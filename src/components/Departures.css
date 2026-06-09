@@ -1,8 +1,9 @@
-/* Card container for the whole train block */
+/* Card container for the whole train block — no visible border/bg,
+   padding handled by .app__main so edges align with weather + calendar. */
 .departures {
   background: #fff;
   border-radius: var(--radius-xl);
-  padding: 1.5rem 1.5rem 1.75rem;
+  padding: 0;
 }
 
 .departures--tappable {
