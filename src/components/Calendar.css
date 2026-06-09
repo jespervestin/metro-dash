@@ -63,7 +63,6 @@
 .calendar__event {
   display: flex;
   align-items: baseline;
-  gap: 1.5rem;
   padding: 0.6rem 0;
   border-bottom: 1px solid #000;
   font-size: 1.9rem;
@@ -80,6 +79,7 @@
   color: var(--ink-muted);
   flex-shrink: 0;
   min-width: 8rem;
+  margin-right: 1.5rem;
 }
 
 .calendar__event-summary {
