@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { findSiteIdByName, getDepartures } from './lib/slTransport';
 import { getCurrentWeather, DEV_WEATHER_SCENARIOS } from './lib/weather';
+import { DEV_CALENDAR_SCENARIOS } from './lib/calendar';
 import Weather from './components/Weather';
 import Calendar from './components/Calendar';
 import Departures from './components/Departures';
@@ -26,6 +27,7 @@ function App() {
   const [weatherLoading, setWeatherLoading] = useState(!DEV_MODE);
   const [devScenarioIndex, setDevScenarioIndex] = useState(0);
   const [useLiveWeather, setUseLiveWeather] = useState(false);
+  const [devCalendarIndex, setDevCalendarIndex] = useState(0);
 
   const loadDepartures = useCallback(async () => {
     if (siteId == null) return;
@@ -127,7 +129,12 @@ function App() {
             : null
         }
       />
-      <Calendar />
+      <Calendar
+        devMode={DEV_MODE}
+        devData={DEV_MODE ? DEV_CALENDAR_SCENARIOS[devCalendarIndex]?.data : null}
+        scenarioLabel={DEV_MODE ? DEV_CALENDAR_SCENARIOS[devCalendarIndex]?.label : null}
+        onCycleScenario={DEV_MODE ? () => setDevCalendarIndex((i) => (i + 1) % DEV_CALENDAR_SCENARIOS.length) : null}
+      />
       <main className="app__main">
         <Departures
           departures={departures}

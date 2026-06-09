@@ -151,3 +151,72 @@ export async function fetchCalendarEvents() {
 }
 
 export { REFRESH_MS as CALENDAR_REFRESH_MS };
+
+// ---------------------------------------------------------------------------
+// Dev-mode mock scenarios — cycled by clicking the calendar in DEV.
+// ---------------------------------------------------------------------------
+function todayStart() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function todayAt(h, m) {
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function tomorrowAt(h, m) {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+export const DEV_CALENDAR_SCENARIOS = [
+  {
+    label: 'Inga händelser',
+    data: { dateLabel: null, events: [], isToday: false },
+  },
+  {
+    label: 'Idag · 2 händelser',
+    data: {
+      dateLabel: 'Idag',
+      isToday: true,
+      events: [
+        { summary: 'Tandläkare', startDate: todayAt(9, 30), endDate: todayAt(10, 15), allDay: false },
+        { summary: 'Middag med familjen', startDate: todayAt(18, 0), endDate: todayAt(20, 0), allDay: false },
+      ],
+    },
+  },
+  {
+    label: 'Idag · heldag',
+    data: {
+      dateLabel: 'Idag',
+      isToday: true,
+      events: [
+        { summary: 'Semester', startDate: todayStart(), endDate: todayStart(), allDay: true },
+        { summary: 'Stäm av projektet', startDate: todayAt(14, 0), endDate: todayAt(14, 30), allDay: false },
+      ],
+    },
+  },
+  {
+    label: 'Imorgon · händelse',
+    data: {
+      dateLabel: (() => {
+        const d = new Date();
+        d.setDate(d.getDate() + 1);
+        const weekday = d.toLocaleDateString('sv-SE', { weekday: 'short' });
+        const day = d.getDate();
+        const month = d.toLocaleDateString('sv-SE', { month: 'short' }).replace('.', '');
+        const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+        return `${cap(weekday)} ${day} ${cap(month)}`;
+      })(),
+      isToday: false,
+      events: [
+        { summary: 'Möte med chefen', startDate: tomorrowAt(10, 0), endDate: tomorrowAt(11, 0), allDay: false },
+      ],
+    },
+  },
+];

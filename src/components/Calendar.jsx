@@ -28,7 +28,7 @@ function EventList({ events, dateLabel }) {
   );
 }
 
-export default function Calendar() {
+export default function Calendar({ devMode, devData, scenarioLabel, onCycleScenario }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,26 +45,26 @@ export default function Calendar() {
     }
   }, []);
 
-  const handleRefresh = useCallback(() => {
-    setLoading(true);
-    load();
-  }, [load]);
-
   useEffect(() => {
+    if (devMode) return; // don't fetch in dev
     load();
     const t = setInterval(load, CALENDAR_REFRESH_MS);
     return () => clearInterval(t);
-  }, [load]);
+  }, [load, devMode]);
+
+  const displayData = devMode ? devData : data;
+  const isLoading = devMode ? false : (loading && !data);
+  const displayError = devMode ? null : error;
 
   const sectionProps = {
-    className: 'calendar calendar--tappable',
+    className: `calendar calendar--tappable${displayError ? ' calendar--error' : ''}`,
     'aria-label': 'Kalender',
-    onClick: handleRefresh,
+    onClick: onCycleScenario || undefined,
     role: 'button',
-    title: 'Tryck för att uppdatera',
+    title: devMode ? `Dev: ${scenarioLabel} — klicka för att byta` : 'Tryck för att uppdatera',
   };
 
-  if (loading && !data) {
+  if (isLoading) {
     return (
       <section {...sectionProps}>
         <p className="calendar__loading">Laddar kalender…</p>
@@ -72,25 +72,24 @@ export default function Calendar() {
     );
   }
 
-  if (error && !data) {
-    return (
-      <section {...sectionProps} className="calendar calendar--tappable calendar--error">
-        <p className="calendar__error">{error}</p>
-      </section>
-    );
-  }
-
-  if (!data?.events?.length) {
+  if (displayError && !displayData) {
     return (
       <section {...sectionProps}>
-        <p className="calendar__empty">Inga kommande händelser</p>
+        <p className="calendar__error">{displayError}</p>
       </section>
     );
   }
 
   return (
     <section {...sectionProps}>
-      <EventList events={data.events} dateLabel={data.dateLabel} />
+      {devMode && (
+        <span className="calendar__dev-badge">Dev · {scenarioLabel}</span>
+      )}
+      {!displayData?.events?.length ? (
+        <p className="calendar__empty">Inga kommande händelser</p>
+      ) : (
+        <EventList events={displayData.events} dateLabel={displayData.dateLabel} />
+      )}
     </section>
   );
 }
