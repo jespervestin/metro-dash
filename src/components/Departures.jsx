@@ -94,8 +94,7 @@ export default function Departures({ departures, loading, error, onRefresh }) {
       role={onRefresh ? 'button' : undefined}
       title={onRefresh ? 'Tryck för att uppdatera' : undefined}
     >
-      <h2 className="departures__title">Nästa mot Kungsträdgården</h2>
-      {list.length === 0 ? (
+{list.length === 0 ? (
         <p className="departures__empty">Ingen tunnelbana mot Kungsträdgården just nu.</p>
       ) : (
         <>
