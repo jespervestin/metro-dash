@@ -10,7 +10,7 @@
 }
 
 .departures__title {
-  font-size: 1.15rem;
+  font-size: 1.5rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -31,7 +31,7 @@
 }
 
 .departures__next-leave {
-  font-size: 3.4rem;
+  font-size: 4.5rem;
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.03em;
@@ -41,7 +41,7 @@
 }
 
 .departures__next-detail {
-  font-size: 1.4rem;
+  font-size: 1.9rem;
   color: #fff;
   display: flex;
   align-items: center;
@@ -65,7 +65,7 @@
 }
 
 .departures__next-depart {
-  font-size: 1.3rem;
+  font-size: 1.8rem;
   font-variant-numeric: tabular-nums;
   color: #fff;
   margin-top: 0.15rem;
@@ -86,8 +86,8 @@
   grid-template-columns: auto 1fr auto auto;
   gap: 0.75rem 1.1rem;
   align-items: center;
-  padding: 1rem 1.25rem;
-  font-size: 1.4rem;
+  padding: 1.1rem 1.25rem;
+  font-size: 1.9rem;
   border-bottom: 2px solid #000;
 }
 
@@ -113,13 +113,13 @@
 .departures__line--green {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  min-width: 2.75rem;
-  padding: 0.3rem 0.65rem;
+  min-width: 3.5rem;
+  padding: 0.35rem 0.75rem;
   background: #000;
   color: #fff;
   border-radius: var(--radius-sm);
   text-align: center;
-  font-size: 1.35rem;
+  font-size: 1.8rem;
 }
 
 .departures__destination {
@@ -139,7 +139,7 @@
 .departures__time {
   font-variant-numeric: tabular-nums;
   color: var(--ink-muted);
-  font-size: 1.35rem;
+  font-size: 1.8rem;
   font-weight: 500;
 }
 
@@ -159,10 +159,10 @@
 }
 
 .departures__countdown {
-  font-size: 1.35rem;
+  font-size: 1.9rem;
   font-weight: 600;
   color: #000;
-  min-width: 4.5rem;
+  min-width: 5.5rem;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
