@@ -16,7 +16,7 @@
   min-height: 0;
   /* Equal gap to both window edges; center the card vertically in the
      remaining space so the gap above and below it is balanced. */
-  padding: 2.5rem;
+  padding: 0.75rem 2.5rem 2.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
