@@ -11,7 +11,7 @@ const PAGE_BG_FALLBACK = '#ffffff';
 const DEV_MODE = import.meta.env.DEV;
 
 const STATION_NAME = 'Duvbo';
-const DEPARTURES_INTERVAL_MS = 45000;
+const DEPARTURES_INTERVAL_MS = 30000;
 const WEATHER_INTERVAL_MS = 5 * 60 * 1000;
 
 function App() {

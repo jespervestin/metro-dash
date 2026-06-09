@@ -72,7 +72,7 @@ export default function Departures({ departures, loading, error, onRefresh }) {
     const iso = (d) => d.expected || d.scheduled;
     return departures
       .filter((d) => minutesUntilDeparture(iso(d)) !== null)
-      .slice(0, 3);
+      .slice(0, 6);
   }, [departures]);
 
   const next = useMemo(() => {
