@@ -25,6 +25,8 @@ const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 const SL_HOST = 'transport.integration.sl.se';
 const WEATHER_HOST = 'api.open-meteo.com';
+// Set CALENDAR_ICAL_URL as an environment variable on the Pi — never hard-code it here.
+const CALENDAR_ICAL_URL = process.env.CALENDAR_ICAL_URL || '';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -37,6 +39,31 @@ const MIME = {
   '.jpg': 'image/jpeg',
   '.woff2': 'font/woff2',
 };
+
+/** Proxy the Google Calendar ICS feed — the full URL comes from CALENDAR_ICAL_URL env var. */
+function proxyCalendar(req, res) {
+  if (!CALENDAR_ICAL_URL) {
+    res.writeHead(503, { 'Content-Type': 'text/plain' });
+    return res.end('CALENDAR_ICAL_URL env var not set on the server');
+  }
+  let parsed;
+  try { parsed = new URL(CALENDAR_ICAL_URL); } catch {
+    res.writeHead(500, { 'Content-Type': 'text/plain' });
+    return res.end('CALENDAR_ICAL_URL is not a valid URL');
+  }
+  const upstream = https.request(
+    { hostname: parsed.hostname, path: parsed.pathname + parsed.search, method: 'GET', headers: { host: parsed.hostname } },
+    (up) => {
+      res.writeHead(up.statusCode || 502, { 'Content-Type': 'text/calendar; charset=utf-8' });
+      up.pipe(res);
+    }
+  );
+  upstream.on('error', (e) => {
+    res.writeHead(502, { 'Content-Type': 'text/plain' });
+    res.end(`calendar proxy error: ${e.message}`);
+  });
+  req.pipe(upstream);
+}
 
 /** Reverse-proxy an /api/* path to an upstream HTTPS host. */
 function proxy(req, res, host, prefix) {
@@ -89,6 +116,7 @@ http
     const url = req.url || '';
     if (url.startsWith('/api/sl')) return proxy(req, res, SL_HOST, /^\/api\/sl/);
     if (url.startsWith('/api/weather')) return proxy(req, res, WEATHER_HOST, /^\/api\/weather/);
+    if (url.startsWith('/api/calendar')) return proxyCalendar(req, res);
     serveStatic(req, res);
   })
   .listen(PORT, HOST, () => {

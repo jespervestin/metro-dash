@@ -29,20 +29,16 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/weather/, ''),
       },
-      '/api/calendar.ics': {
+      '/api/calendar': {
         target: 'https://calendar.google.com',
         changeOrigin: true,
         rewrite: () => {
-          // Extract path from VITE_CALENDAR_ICAL_URL env var
           const url = process.env.VITE_CALENDAR_ICAL_URL;
-          if (!url) {
-            throw new Error('VITE_CALENDAR_ICAL_URL environment variable is required. Create a .env.local file.');
-          }
+          if (!url) return '/'; // Will 404 gracefully; set VITE_CALENDAR_ICAL_URL in .env.local
           try {
             const parsed = new URL(url);
             return parsed.pathname + parsed.search;
           } catch {
-            // If it's already a path, use as-is
             return url.startsWith('/') ? url : '/' + url;
           }
         },

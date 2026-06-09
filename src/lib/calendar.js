@@ -4,7 +4,9 @@
  * In production: fetches directly from Google Calendar URL (from env var).
  */
 
-const CALENDAR_URL = import.meta.env.VITE_CALENDAR_ICAL_URL || '/api/calendar.ics';
+// Always routed through the Pi server proxy (/api/calendar) — avoids CORS and
+// lets the Pi (with modern TLS certs) do the HTTPS handshake to Google.
+const CALENDAR_URL = '/api/calendar';
 const REFRESH_MS = 5 * 60 * 1000; // 5 min
 
 /**
