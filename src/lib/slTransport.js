@@ -8,13 +8,14 @@ const SL_BASE = '/api/sl';
 
 export const METRO_MODES = new Set(['METRO']);
 
-// Filter by direction code instead of destination name — robust against
-// station closures (e.g. Kungsträdgården renovation). Direction 1 on
-// the blue line from Duvbo = southbound (towards city center).
-export const TOWARDS_DIRECTION = 1;
+// Filter on d.direction (the line's terminal station name, e.g.
+// "Kungsträdgården") rather than d.destination (where the train actually
+// stops, e.g. "T-Centralen" during station closures).
+export const TOWARDS_DIRECTION = 'Kungsträdgården';
 
 function towardsDirection(d) {
-  return d.direction === TOWARDS_DIRECTION;
+  const dir = (d.direction ?? '').toString().toLowerCase();
+  return dir.includes(TOWARDS_DIRECTION.toLowerCase());
 }
 
 const SITE_CACHE_KEY = 'sl_site_id_cache';
