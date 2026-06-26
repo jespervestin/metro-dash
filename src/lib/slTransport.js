@@ -8,12 +8,13 @@ const SL_BASE = '/api/sl';
 
 export const METRO_MODES = new Set(['METRO']);
 
-/** Only show departures towards this destination (Duvbo blue line → Kungsträdgården). */
-export const TOWARDS_DESTINATION = 'Kungsträdgården';
+// Filter by direction code instead of destination name — robust against
+// station closures (e.g. Kungsträdgården renovation). Direction 1 on
+// the blue line from Duvbo = southbound (towards city center).
+export const TOWARDS_DIRECTION = 1;
 
-function towardsDestination(d) {
-  const dest = (d.destination ?? d.direction ?? '').toString().toLowerCase();
-  return dest.includes(TOWARDS_DESTINATION.toLowerCase());
+function towardsDirection(d) {
+  return d.direction === TOWARDS_DIRECTION;
 }
 
 const SITE_CACHE_KEY = 'sl_site_id_cache';
@@ -77,6 +78,6 @@ export async function getDepartures(siteId) {
   const data = await res.json();
   const departures = (data.departures || [])
     .filter((d) => METRO_MODES.has(d.line?.transport_mode))
-    .filter(towardsDestination);
+    .filter(towardsDirection);
   return { departures, stop_deviations: data.stop_deviations };
 }

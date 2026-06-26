@@ -95,13 +95,13 @@ export default function Departures({ departures, loading, error, onRefresh }) {
       title={onRefresh ? 'Tryck för att uppdatera' : undefined}
     >
 {list.length === 0 ? (
-        <p className="departures__empty">Ingen tunnelbana mot Kungsträdgården just nu.</p>
+        <p className="departures__empty">Ingen tunnelbana mot stan just nu.</p>
       ) : (
         <>
           <div className="departures__next">
             <span className="departures__next-leave">{nextLeave?.leaveLabel ?? '–'}</span>
             <span className="departures__next-detail">
-              mot Kungsträdgården · avgång {formatTime(next.expected || next.scheduled)}
+              mot stan · avgång {formatTime(next.expected || next.scheduled)}
               {nextDelayed > 0 && (
                 <span className="departures__next-delay" title={`${nextDelayed} min försening`}>+{nextDelayed}</span>
               )}
