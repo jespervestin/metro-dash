@@ -1,0 +1,27 @@
+.clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.clock__date {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0 0 0.35rem 0;
+  white-space: nowrap;
+}
+
+.clock__time {
+  font-size: 8.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  font-variant-numeric: tabular-nums;
+  color: #000;
+  margin: 0;
+  white-space: nowrap;
+}

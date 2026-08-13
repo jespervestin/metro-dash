@@ -1,67 +1,15 @@
+/* Compact weather block: sits to the right of the clock in .app__top, so it is
+   right-aligned and deliberately smaller than it used to be — the clock is now
+   the dominant element in the header. */
 .weather-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
   flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding: 3rem 2.5rem 1.75rem;
-  width: 100%;
+  min-width: 0;
   color: #000;
   background: #fff;
-  border-bottom: 3px solid #000;
-  position: relative;
-}
-
-/* Color/gradient layers from the phone theme are not used on e-ink. */
-.weather-panel__bg,
-.weather-panel__bg::after {
-  display: none;
-}
-
-.weather-panel__inner {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  text-align: left;
-  position: relative;
-  z-index: 1;
-  width: 100%;
-}
-
-.weather-panel__content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-}
-
-/* Big temp next to the condition + humidity stack */
-.weather-panel__row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  margin-top: 0.75rem;
-}
-
-/* Dev badge: keep simple, ink-only */
-.weather-panel__dev-badge {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #000;
-  background: #fff;
-  padding: 0.3rem 0.7rem;
-  border: 2px solid #000;
-  border-radius: var(--radius-sm);
-  white-space: nowrap;
-  cursor: pointer;
 }
 
 .weather-panel--dev {
@@ -69,50 +17,30 @@
 }
 
 .weather-panel__temp {
-  font-size: 10rem;
+  font-size: 4.5rem;
   font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 0.85;
-  margin: 0 1.75rem 0 0;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  margin: 0;
   color: #000;
-}
-
-.weather-panel__info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  min-width: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .weather-panel__label {
-  font-size: 3.2rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  margin: 0;
+  margin: 0.25rem 0 0 0;
   color: #000;
   line-height: 1.05;
   letter-spacing: -0.01em;
 }
 
 .weather-panel__meta {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   color: var(--ink-muted);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  margin: 0.4rem 0 0 0;
-}
-
-.weather-panel__date {
-  font-size: 2.2rem;
-  color: #000;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin: 0;
-}
-
-.weather-panel__date--standalone {
-  margin-top: 0.75rem;
+  margin: 0.2rem 0 0 0;
 }
 
 .weather-panel__loading-text,
@@ -120,4 +48,22 @@
   margin: 0;
   font-size: 1.5rem;
   color: #000;
+}
+
+/* Dev badge: static (not absolutely positioned) so it can't overlap the
+   weather figures now that this block sits in the header row. */
+.weather-panel__dev-badge {
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #000;
+  background: #fff;
+  padding: 0.25rem 0.6rem;
+  border: 2px solid #000;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  margin-top: 0.5rem;
 }

@@ -11,6 +11,18 @@
   background: #fff;
 }
 
+/* Header: clock on the left (dominant), compact weather on the right.
+   Owns the divider that used to live on .weather-panel. */
+.app__top {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 2.5rem 2.5rem 1.75rem;
+  border-bottom: 3px solid #000;
+  background: #fff;
+}
+
 .app__main {
   flex: 1 1 auto;
   min-height: 0;

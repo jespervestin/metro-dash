@@ -3,6 +3,7 @@ import { findSiteIdByName, getDepartures } from './lib/slTransport';
 import { getCurrentWeather, DEV_WEATHER_SCENARIOS } from './lib/weather';
 import { DEV_CALENDAR_SCENARIOS } from './lib/calendar';
 import Weather from './components/Weather';
+import Clock from './components/Clock';
 import Calendar from './components/Calendar';
 import Departures from './components/Departures';
 import './App.css';
@@ -116,19 +117,22 @@ function App() {
 
   return (
     <div className="app">
-      <Weather
-        data={weather}
-        loading={(!DEV_MODE || useLiveWeather) && weatherLoading}
-        error={(!DEV_MODE || useLiveWeather) ? weatherError : null}
-        devMode={DEV_MODE && !useLiveWeather}
-        onCycleScenario={cycleDevWeather}
-        onUseLiveData={DEV_MODE ? () => setUseLiveWeather(true) : undefined}
-        scenarioLabel={
-          DEV_MODE && !useLiveWeather && DEV_WEATHER_SCENARIOS[devScenarioIndex]
-            ? DEV_WEATHER_SCENARIOS[devScenarioIndex].label
-            : null
-        }
-      />
+      <header className="app__top">
+        <Clock />
+        <Weather
+          data={weather}
+          loading={(!DEV_MODE || useLiveWeather) && weatherLoading}
+          error={(!DEV_MODE || useLiveWeather) ? weatherError : null}
+          devMode={DEV_MODE && !useLiveWeather}
+          onCycleScenario={cycleDevWeather}
+          onUseLiveData={DEV_MODE ? () => setUseLiveWeather(true) : undefined}
+          scenarioLabel={
+            DEV_MODE && !useLiveWeather && DEV_WEATHER_SCENARIOS[devScenarioIndex]
+              ? DEV_WEATHER_SCENARIOS[devScenarioIndex].label
+              : null
+          }
+        />
+      </header>
       <Calendar
         devMode={DEV_MODE}
         devData={DEV_MODE ? DEV_CALENDAR_SCENARIOS[devCalendarIndex]?.data : null}
