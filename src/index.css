@@ -50,11 +50,15 @@
   --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-text: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Only three inks. Grey is for TEXT ONLY — grey area fills dither into
-     visible noise on a 1-bit panel. */
+  /* Two inks. The design allowed a mid-grey (#3a3a3a) for de-emphasised text,
+     but on this 1-bit panel there is no grey to render: it dithers into a
+     checkerboard that eats the letterforms at small sizes and is hard to read
+     at any distance. Everything is solid black; hierarchy comes from size and
+     weight alone. The token is kept so the call sites stay declarative about
+     which text is secondary. */
   --ink: #000;
   --paper: #fff;
-  --ink-muted: #3a3a3a;
+  --ink-muted: #000;
 
   /* Page margin, 44px in the design. */
   --margin: 2.75rem;
