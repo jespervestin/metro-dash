@@ -1,0 +1,18 @@
+[Unit]
+Description=metro-dash hallway panel
+# network-online rather than network: the proxy needs outbound DNS/TLS at boot.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=REPLACE_WITH_USER
+WorkingDirectory=/home/REPLACE_WITH_USER/metro-dash
+# Holds CALENDAR_ICAL_URL. Kept out of the repo and out of shell history.
+EnvironmentFile=/etc/metro-dash.env
+ExecStart=REPLACE_WITH_NODE_PATH server.js
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
