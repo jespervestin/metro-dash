@@ -50,6 +50,19 @@ html {
   background-color: #fff;
   height: 100%;
   overflow: hidden;
+  font-size: 16px;
+}
+
+/* The layout is designed against a 758px-wide canvas with a 16px root font.
+   On the target panel the CSS viewport may be narrower than 758 (a pixel
+   ratio > 1 divides the 758 physical pixels down), so scale the root font
+   with the viewport to keep every rem-based size proportional:
+   16 / 758 * 100vw = 2.1108vw. At exactly 758px this is a no-op.
+   Desktop dev viewports stay at the 16px baseline. */
+@media (max-width: 900px) {
+  html {
+    font-size: 2.1108vw;
+  }
 }
 
 body {

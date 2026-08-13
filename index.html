@@ -4,14 +4,44 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
-    <!-- Lock the CSS layout viewport to 758px wide regardless of the device's
-         pixel ratio; the browser scales that to fill the panel. No initial-scale,
-         which would otherwise override the width on high-DPR screens. -->
-    <meta name="viewport" content="width=758, viewport-fit=cover" />
+    <!-- Use the device's own ideal viewport rather than hardcoding 758px: on a
+         panel with a pixel ratio != 1 the CSS viewport is narrower than the
+         758 physical pixels, and a hardcoded width overflows (looks zoomed in).
+         index.css scales the root font-size with the viewport instead, so the
+         758x1024 design stays proportional at any reported CSS width. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Nästa tunnelbana – Duvbo</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <!-- Viewport diagnostics: open the page with ?debug to print what this
+         device actually reports. Plain ES5 and outside the bundle so it still
+         runs on the old WebView even if the app itself fails to boot. -->
+    <script>
+      (function () {
+        if (window.location.search.indexOf('debug') === -1) return;
+        var d = document.createElement('div');
+        d.style.cssText =
+          'position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#000;' +
+          'color:#fff;font:12px monospace;padding:6px 8px;line-height:1.5;';
+        function render() {
+          d.innerHTML =
+            'css viewport: ' + window.innerWidth + ' x ' + window.innerHeight +
+            '<br>screen: ' + screen.width + ' x ' + screen.height +
+            '<br>devicePixelRatio: ' + window.devicePixelRatio +
+            '<br>root font-size: ' +
+            window.getComputedStyle(document.documentElement).fontSize +
+            '<br>doc scroll width: ' + document.documentElement.scrollWidth;
+        }
+        render();
+        window.addEventListener('resize', render);
+        // Re-read once styles have settled (in dev the CSS is injected by JS
+        // after this script runs, so the first read shows the 16px default).
+        window.addEventListener('load', render);
+        setTimeout(render, 500);
+        document.body.appendChild(d);
+      })();
+    </script>
   </body>
 </html>
