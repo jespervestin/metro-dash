@@ -1,27 +1,48 @@
-.clock {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 0;
+.clock__time {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .clock__date {
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-family: var(--font-text);
+  font-weight: 600;
   text-transform: uppercase;
-  color: #000;
-  margin: 0 0 0.35rem 0;
+  color: var(--ink);
+  margin: 0;
   white-space: nowrap;
 }
 
-.clock__time {
-  font-size: 8.5rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 0.85;
-  font-variant-numeric: tabular-nums;
-  color: #000;
-  margin: 0;
-  white-space: nowrap;
+/* Header variant — sits beside the weather above the hairline. */
+.clock--header .clock__time {
+  font-size: 5.5rem;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+}
+
+.clock--header .clock__date {
+  font-size: 1.375rem;
+  letter-spacing: 0.18em;
+  margin-top: 1rem;
+}
+
+/* Hero variant — used when there is no departure to lead with, so the clock
+   becomes the thing you read from across the room. */
+.clock--hero {
+  padding: 3.5rem var(--margin) 2.5rem var(--margin);
+}
+
+.clock--hero .clock__time {
+  font-size: 12.25rem;
+  line-height: 0.82;
+  letter-spacing: -0.055em;
+}
+
+.clock--hero .clock__date {
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+  margin-top: 1.5rem;
 }

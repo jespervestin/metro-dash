@@ -1,29 +1,69 @@
+/* Self-hosted static instances. Two reasons this must not come from a CDN:
+   the device's TLS roots are too old to reach fonts.googleapis.com, and
+   Google's v2 API serves *variable* fonts, which this WebView cannot render —
+   every weight would collapse to one and the whole hierarchy with it.
+   These are the latin subset only; Swedish å ä ö live in Latin-1. */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/SpaceGrotesk-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/fonts/SpaceGrotesk-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/SpaceGrotesk-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/IBMPlexSans-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/IBMPlexSans-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/fonts/IBMPlexSans-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/IBMPlexSans-700.woff2') format('woff2');
+}
+
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-text: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Only three inks. Grey is for TEXT ONLY — grey area fills dither into
+     visible noise on a 1-bit panel. */
+  --ink: #000;
+  --paper: #fff;
+  --ink-muted: #3a3a3a;
+
+  /* Page margin, 44px in the design. */
+  --margin: 2.75rem;
+
+  font-family: var(--font-text);
   line-height: 1.4;
   font-weight: 400;
-
-  /* E-ink: pure black on white, high contrast. No alpha/transparency —
-     it renders as dithered noise on a 1-bit panel. */
-  color: #000;
-  background-color: #fff;
-
-  /* Three solid ink tones for hierarchy (no opacity). */
-  --ink: #000;
-  --ink-muted: #3a3a3a;
-  --ink-faint: #555;
-  --line: #000;
-  --hairline: #888;
-
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-
-  /* Target panel size */
-  --screen-w: 758px;
-  --screen-h: 1024px;
-
+  color: var(--ink);
+  background-color: var(--paper);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -33,8 +73,7 @@
   box-sizing: border-box;
 }
 
-/* Disable all animation/transition globally: e-ink refresh is slow and
-   partial updates leave ghosting. */
+/* E-ink refreshes slowly and partial updates ghost, so nothing may move. */
 *,
 *::before,
 *::after {
@@ -47,18 +86,17 @@
 }
 
 html {
-  background-color: #fff;
+  background-color: var(--paper);
   height: 100%;
   overflow: hidden;
   font-size: 16px;
 }
 
-/* The layout is designed against a 758px-wide canvas with a 16px root font.
-   On the target panel the CSS viewport may be narrower than 758 (a pixel
-   ratio > 1 divides the 758 physical pixels down), so scale the root font
-   with the viewport to keep every rem-based size proportional:
-   16 / 758 * 100vw = 2.1108vw. At exactly 758px this is a no-op.
-   Desktop dev viewports stay at the 16px baseline. */
+/* The design is drawn against a 758px canvas at a 16px root. On the panel the
+   CSS viewport may be narrower than 758 (a pixel ratio > 1 divides the 758
+   physical pixels down), so scale the root font with the viewport and express
+   every size in rem: 16 / 758 * 100vw = 2.1108vw. At exactly 758px this is a
+   no-op. Hairlines stay in px so they remain a crisp single pixel. */
 @media (max-width: 900px) {
   html {
     font-size: 2.1108vw;
@@ -69,24 +107,20 @@ body {
   margin: 0;
   width: 100%;
   height: 100%;
-  min-height: 100vh;
   overflow: hidden;
-  background-color: #fff;
+  background-color: var(--paper);
   display: flex;
   justify-content: center;
 }
 
 #root {
-  /* Fill the (758px-locked) viewport rather than hardcoding pixels, so the
-     layout maps correctly whatever the device's real pixel ratio is. */
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background-color: #fff;
+  background-color: var(--paper);
 }
 
-/* Visible, ink-based focus outline */
 :focus-visible {
-  outline: 2px solid #000;
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }

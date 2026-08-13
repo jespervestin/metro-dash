@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useMinuteTick } from '../lib/useMinuteTick';
 import './Clock.css';
 
-/** Manual pad — String.prototype.padStart is ES2017 and absent in Chrome 53. */
+/** Manual pad — String.prototype.padStart is ES2017 and absent in this WebView. */
 function pad(n) {
   return n < 10 ? '0' + n : String(n);
 }
@@ -18,35 +18,19 @@ function formatDateLine(date) {
   return `${cap(weekday)} ${day} ${cap(month)}`;
 }
 
-export default function Clock() {
-  const [now, setNow] = useState(() => new Date());
-
-  useEffect(() => {
-    let timeoutId;
-    // Re-tick exactly on the minute boundary rather than every 60s from mount:
-    // a plain interval drifts and can leave the panel showing a time that is
-    // almost a full minute stale, which is very visible on a wall clock.
-    function scheduleNextTick() {
-      const d = new Date();
-      const msToNextMinute = 60000 - (d.getSeconds() * 1000 + d.getMilliseconds());
-      timeoutId = setTimeout(() => {
-        setNow(new Date());
-        scheduleNextTick();
-      }, msToNextMinute);
-    }
-    scheduleNextTick();
-    return () => clearTimeout(timeoutId);
-  }, []);
+/**
+ * @param {'header'|'hero'} variant - 'hero' is the large treatment used when
+ *   there is no departure to lead with and the clock takes the top slot.
+ */
+export default function Clock({ variant = 'header' }) {
+  const now = useMinuteTick();
 
   return (
-    <div className="clock">
-      <p className="clock__date">{formatDateLine(now)}</p>
-      <p
-        className="clock__time"
-        aria-label={`Klockan är ${formatTime(now)}`}
-      >
+    <div className={`clock clock--${variant}`}>
+      <p className="clock__time" aria-label={`Klockan är ${formatTime(now)}`}>
         {formatTime(now)}
       </p>
+      <p className="clock__date">{formatDateLine(now)}</p>
     </div>
   );
 }

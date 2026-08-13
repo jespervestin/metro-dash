@@ -67,6 +67,60 @@ export async function findSiteIdByName(name) {
 }
 
 /**
+ * Dev mode: fixed departure sets that exercise each of the three panel states,
+ * so the layout can be reviewed without waiting for the real conditions.
+ * Same shape as the SL API response.
+ */
+function inMinutes(m) {
+  return new Date(Date.now() + m * 60000).toISOString();
+}
+
+function mockDeparture(designation, destination, minutes, delay = 0) {
+  const expected = inMinutes(minutes);
+  return {
+    journey: { id: `${designation}-${minutes}` },
+    line: { designation, transport_mode: 'METRO' },
+    destination,
+    direction: TOWARDS_DIRECTION,
+    scheduled: inMinutes(minutes - delay),
+    expected,
+  };
+}
+
+/* `departures` is a getter so the offsets are recomputed on every read. Built
+   eagerly they would be fixed to module-load time and quietly rot into the
+   past, making every scenario collapse to "Inga avgångar". */
+export const DEV_DEPARTURE_SCENARIOS = [
+  {
+    label: 'Gå om',
+    get departures() {
+      return [
+        mockDeparture('10', 'T-Centralen', 19),
+        mockDeparture('11', 'Kungsträdgården', 27, 2),
+        mockDeparture('10', 'T-Centralen', 35),
+        mockDeparture('10', 'T-Centralen', 43),
+      ];
+    },
+  },
+  {
+    label: 'Hinner ej gå',
+    get departures() {
+      return [
+        mockDeparture('10', 'T-Centralen', 5),
+        mockDeparture('11', 'Kungsträdgården', 13, 2),
+        mockDeparture('10', 'T-Centralen', 21),
+      ];
+    },
+  },
+  {
+    label: 'Inga avgångar',
+    get departures() {
+      return [];
+    },
+  },
+];
+
+/**
  * Fetch departures for a site and return only metro (tunnelbana) departures.
  * forecast=60 gives us departures up to 60 minutes ahead so the list
  * never runs dry between polls.

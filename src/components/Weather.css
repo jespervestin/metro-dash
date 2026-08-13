@@ -1,69 +1,78 @@
-/* Compact weather block: sits to the right of the clock in .app__top, so it is
-   right-aligned and deliberately smaller than it used to be — the clock is now
-   the dominant element in the header. */
-.weather-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  text-align: right;
-  flex: 0 0 auto;
-  min-width: 0;
-  color: #000;
-  background: #fff;
-}
-
-.weather-panel--dev {
-  cursor: pointer;
-}
-
-.weather-panel__temp {
-  font-size: 4.5rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 0.9;
-  margin: 0;
-  color: #000;
-  font-variant-numeric: tabular-nums;
-}
-
-.weather-panel__label {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin: 0.25rem 0 0 0;
-  color: #000;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-}
-
-.weather-panel__meta {
-  font-size: 1.4rem;
-  color: var(--ink-muted);
+.weather__temp {
+  font-family: var(--font-display);
   font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  margin: 0.2rem 0 0 0;
-}
-
-.weather-panel__loading-text,
-.weather-panel__error-text {
+  color: var(--ink);
   margin: 0;
-  font-size: 1.5rem;
-  color: #000;
-}
-
-/* Dev badge: static (not absolutely positioned) so it can't overlap the
-   weather figures now that this block sits in the header row. */
-.weather-panel__dev-badge {
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #000;
-  background: #fff;
-  padding: 0.25rem 0.6rem;
-  border: 2px solid #000;
-  border-radius: var(--radius-sm);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  cursor: pointer;
+}
+
+.weather__condition {
+  font-family: var(--font-text);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.weather__humidity {
+  font-family: var(--font-text);
+  font-weight: 400;
+  color: var(--ink-muted);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.weather__note {
+  font-family: var(--font-text);
+  font-size: 1.1875rem;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+/* Header variant — right-aligned block beside the clock. */
+.weather--header .weather__temp {
+  font-size: 2.75rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.weather--header .weather__condition {
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
   margin-top: 0.5rem;
+}
+
+.weather--header .weather__humidity {
+  font-size: 1.1875rem;
+  margin-top: 0.25rem;
+}
+
+/* Large variant — the no-departures state, where weather moves up the page. */
+.weather--large {
+  display: flex;
+  align-items: flex-end;
+  padding: 2.125rem var(--margin) 2.375rem var(--margin);
+}
+
+.weather--large .weather__temp {
+  font-size: 5rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  flex: 1;
+}
+
+.weather--large .weather__detail {
+  text-align: right;
+}
+
+.weather--large .weather__condition {
+  font-size: 1.625rem;
+  letter-spacing: 0.1em;
+}
+
+.weather--large .weather__humidity {
+  font-size: 1.375rem;
+  margin-top: 0.375rem;
 }

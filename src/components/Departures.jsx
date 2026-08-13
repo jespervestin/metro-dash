@@ -1,138 +1,139 @@
-import { useState, useEffect, useMemo } from 'react';
+import { WALK_MINUTES } from '../lib/metroState';
 import './Departures.css';
 
-const COUNTDOWN_TICK_MS = 60 * 1000;
+/* The panel is a fixed 1024px with no scroll, so the list and the calendar
+   share one budget. 4 departure rows + 4 calendar events overflows by ~95px,
+   which `overflow:hidden` would silently swallow. 3 rows here and 3 events in
+   the calendar is the widest combination that always fits, and the hero has
+   already answered the question the list only supports. */
+const MAX_ROWS = 3;
 
-const WALK_MINUTES = 10;
-
-/** Stockholm tunnelbana: blue 10/11, red 13/14, green 17/18/19. Returns a color token for CSS. */
-function lineColorToken(designation) {
-  const n = designation != null ? parseInt(designation, 10) : NaN;
-  if (n === 10 || n === 11) return 'blue';
-  if (n === 13 || n === 14) return 'red';
-  if (n === 17 || n === 18 || n === 19) return 'green';
-  return null;
-}
-
-function formatTime(iso) {
+function formatClock(iso) {
   if (!iso) return '–';
-  try {
-    const d = new Date(iso);
-    return d.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
-  } catch {
-    return iso;
-  }
-}
-
-function minutesFromNow(iso) {
-  if (!iso) return null;
   const d = new Date(iso);
-  const diff = (d - Date.now()) / 60000;
-  if (diff < 0) return null;
-  if (diff < 1) return 'Nu';
-  const m = Math.floor(diff);
-  return m === 1 ? '1 min' : `${m} min`;
+  if (Number.isNaN(d.getTime())) return '–';
+  const pad = (n) => (n < 10 ? '0' + n : String(n));
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-/** Minutes until departure; null if in the past. */
-function minutesUntilDeparture(iso) {
-  if (!iso) return null;
-  const d = new Date(iso);
-  const diff = (d - Date.now()) / 60000;
-  return diff < 0 ? null : Math.floor(diff);
+function minuteLabel(m) {
+  if (m == null) return '–';
+  return m < 1 ? 'Nu' : `${m} min`;
 }
 
-/** Minutes delayed (expected after scheduled); 0 if not delayed. */
-function delayMinutes(d) {
-  if (!d?.expected || !d?.scheduled) return 0;
-  const diff = (new Date(d.expected) - new Date(d.scheduled)) / 60000;
-  return diff > 0 ? Math.round(diff) : 0;
+/** The section marker: a solid square, the only graphic element in the design. */
+function Marker() {
+  return <span className="metro__marker" aria-hidden="true" />;
 }
 
-/** "Leave in X min" considering walk time; { leaveLabel, departLabel }. When train is 5 min or less away, show "Du missade detta". */
-function leaveIn(iso) {
-  const min = minutesUntilDeparture(iso);
-  if (min == null) return { leaveLabel: null, departLabel: null };
-  const departLabel = min < 1 ? 'Nu' : min === 1 ? '1 min' : `${min} min`;
-  const leaveInMin = min - WALK_MINUTES;
-  const leaveLabel =
-    min <= WALK_MINUTES ? 'Hinner ej gå' : leaveInMin === 1 ? 'Gå om 1 min' : `Gå om ${leaveInMin} min`;
-  return { leaveLabel, departLabel };
-}
-
-export default function Departures({ departures, loading, error, onRefresh }) {
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setTick((n) => n + 1), COUNTDOWN_TICK_MS);
-    return () => clearInterval(t);
-  }, []);
-
-  const list = useMemo(() => {
-    if (!Array.isArray(departures)) return [];
-    const iso = (d) => d.expected || d.scheduled;
-    return departures
-      .filter((d) => minutesUntilDeparture(iso(d)) !== null)
-      .slice(0, 6);
-  }, [departures]);
-
-  const next = useMemo(() => {
-    const iso = (d) => d.expected || d.scheduled;
-    const catchable = list.find((d) => (minutesUntilDeparture(iso(d)) ?? 0) > WALK_MINUTES);
-    return catchable ?? list[0] ?? null;
-  }, [list]);
-
-  const nextLeave = next ? leaveIn(next.expected || next.scheduled) : null;
-  const nextDelayed = next ? delayMinutes(next) : 0;
-
-  if (loading) return <div className="departures departures--loading">Laddar avgångar…</div>;
-  if (error) return <div className="departures departures--error">Avgångar: {error}</div>;
-
+function SectionLabel() {
   return (
-    <section
-      className={`departures ${onRefresh ? 'departures--tappable' : ''}`}
-      onClick={onRefresh || undefined}
-      role={onRefresh ? 'button' : undefined}
-      title={onRefresh ? 'Tryck för att uppdatera' : undefined}
-    >
-{list.length === 0 ? (
-        <p className="departures__empty">Ingen tunnelbana mot stan just nu.</p>
-      ) : (
-        <>
-          <div className="departures__next">
-            <span className="departures__next-leave">{nextLeave?.leaveLabel ?? '–'}</span>
-            <span className="departures__next-detail">
-              mot stan · avgång {formatTime(next.expected || next.scheduled)}
-              {nextDelayed > 0 && (
-                <span className="departures__next-delay" title={`${nextDelayed} min försening`}>+{nextDelayed}</span>
-              )}
-            </span>
-            <span className="departures__next-depart">
-              Tåget går {nextLeave?.departLabel ?? '–'}
-            </span>
-          </div>
-          <ul className="departures__list">
-            {list.map((d, i) => {
-              const lineColor = lineColorToken(d.line?.designation);
-              const delayed = delayMinutes(d);
-              return (
-              <li key={d.journey?.id ?? i} className={`departures__item ${i === 0 ? 'departures__item--first' : ''} ${delayed > 0 ? 'departures__item--delayed' : ''}`}>
-                <span className={`departures__line ${lineColor ? `departures__line--${lineColor}` : ''}`}>
-                  {d.line?.designation ?? '–'}
-                </span>
-                <span className="departures__destination">{d.destination ?? d.direction ?? '–'}</span>
-                <span className="departures__time-wrap">
-                  <span className="departures__time">{formatTime(d.expected || d.scheduled)}</span>
-                  {delayed > 0 && (
-                    <span className="departures__delay" title={`${delayed} min försening`}>+{delayed}</span>
-                  )}
-                </span>
-                <span className="departures__countdown">{minutesFromNow(d.expected || d.scheduled) ?? ''}</span>
-              </li>
-            );
-            })}
-          </ul>
-        </>
-      )}
-    </section>
+    <div className="metro__section-label">
+      <Marker />
+      <span>DUVBO → STAN</span>
+    </div>
+  );
+}
+
+function DepartureRows({ rows }) {
+  return (
+    <ul className="metro__list">
+      {rows.slice(0, MAX_ROWS).map((r, i) => (
+        <li className="metro__row" key={r.raw.journey?.id ?? i}>
+          <span className="metro__badge">{r.raw.line?.designation ?? '–'}</span>
+          <span className="metro__dest">
+            {r.raw.destination ?? r.raw.direction ?? '–'}
+          </span>
+          <span className="metro__delay">{r.delay > 0 ? `+${r.delay}` : ''}</span>
+          <span className="metro__time">{formatClock(r.iso)}</span>
+          <span className="metro__countdown">{minuteLabel(r.minutes)}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/**
+ * Renders the metro hero plus the upcoming list. `state` comes from
+ * deriveMetro(). Exactly one black mass per panel: in 'go' it is the
+ * NÄSTA AVGÅNGAR band, in 'missed' it is the hero itself, so the band
+ * de-inverts to a plain label.
+ */
+export default function Departures({ state, loading, error }) {
+  if (loading) {
+    return <div className="metro__note">Laddar avgångar…</div>;
+  }
+
+  if (error) {
+    return (
+      <section className="metro__notice">
+        <SectionLabel />
+        <p className="metro__notice-text">Avgångar kunde inte hämtas.</p>
+      </section>
+    );
+  }
+
+  if (state.kind === 'none') {
+    return (
+      <section className="metro__notice">
+        <SectionLabel />
+        <p className="metro__notice-text">
+          Ingen tunnelbana
+          <br />
+          mot stan just nu.
+        </p>
+      </section>
+    );
+  }
+
+  if (state.kind === 'missed') {
+    const c = state.catchable;
+    return (
+      <>
+        <section className="metro__hero metro__hero--missed">
+          <SectionLabel />
+          <p className="metro__answer">
+            Hinner
+            <br />
+            ej gå
+          </p>
+          {c && (
+            <div className="metro__detail">
+              <span className="metro__detail-strong">Nästa {formatClock(c.iso)}</span>
+              <span className="metro__detail-muted">
+                Gå om {c.minutes - WALK_MINUTES} min
+              </span>
+            </div>
+          )}
+        </section>
+        <div className="metro__list-wrap">
+          <div className="metro__band metro__band--plain">NÄSTA AVGÅNGAR</div>
+          <DepartureRows rows={state.rows} />
+        </div>
+      </>
+    );
+  }
+
+  // kind === 'go'
+  const f = state.first;
+  return (
+    <>
+      <section className="metro__hero">
+        <SectionLabel />
+        <p className="metro__answer">
+          Gå om
+          <br />
+          {f.minutes - WALK_MINUTES} min
+        </p>
+        <div className="metro__detail">
+          <span className="metro__detail-strong">Avgång {formatClock(f.iso)}</span>
+          <span className="metro__detail-muted">Tåget går {f.minutes} min</span>
+        </div>
+      </section>
+      <div className="metro__band">NÄSTA AVGÅNGAR</div>
+      <div className="metro__list-wrap">
+        <DepartureRows rows={state.rows} />
+      </div>
+    </>
   );
 }

@@ -202,6 +202,20 @@ export const DEV_CALENDAR_SCENARIOS = [
     },
   },
   {
+    // Worst case for vertical fit: the panel is a fixed 1024px with no scroll.
+    label: 'Idag · 4 händelser',
+    data: {
+      dateLabel: 'Idag',
+      isToday: true,
+      events: [
+        { summary: 'Tandläkare', startDate: todayAt(9, 30), endDate: todayAt(10, 15), allDay: false },
+        { summary: 'Standup', startDate: todayAt(11, 0), endDate: todayAt(11, 15), allDay: false },
+        { summary: 'Lunch med Anna', startDate: todayAt(12, 30), endDate: todayAt(13, 30), allDay: false },
+        { summary: 'Middag med familjen', startDate: todayAt(18, 0), endDate: todayAt(20, 0), allDay: false },
+      ],
+    },
+  },
+  {
     label: 'Imorgon · händelse',
     data: {
       dateLabel: (() => {

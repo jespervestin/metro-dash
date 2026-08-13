@@ -1,39 +1,77 @@
-.app {
+/* Fixed 758 x 1024 panel. Every direct child is flex-shrink:0; the calendar
+   pins itself to the bottom with margin-top:auto (not position:absolute,
+   which reserves no space and would collide with the departure list). */
+.panel {
   width: 100%;
   height: 100%;
-  max-width: var(--screen-w);
-  max-height: var(--screen-h);
+  max-width: 47.375rem;  /* 758px */
+  max-height: 64rem;     /* 1024px */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
   overflow: hidden;
-  background: #fff;
+  background: var(--paper);
+  color: var(--ink);
 }
 
-/* Header: clock on the left (dominant), compact weather on the right.
-   Owns the divider that used to live on .weather-panel. */
-.app__top {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 2.5rem 2.5rem 1.75rem;
-  border-bottom: 3px solid #000;
-  background: #fff;
+.panel > * {
+  flex-shrink: 0;
 }
 
-.app__main {
-  flex: 1 1 auto;
-  min-height: 0;
-  /* Equal gap to both window edges; center the card vertically in the
-     remaining space so the gap above and below it is balanced. */
-  padding: 0.75rem 2.5rem 2.5rem;
+/* Inset hairline between the top sections — deliberately does not reach the
+   panel edges. */
+.panel__rule {
+  border-top: 1px solid var(--ink);
+  margin: 0 var(--margin);
+}
+
+/* Header: clock left, weather right. */
+.panel__header {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
+  align-items: flex-start;
+  padding: 2.25rem var(--margin) 1.5rem var(--margin);
+}
+
+.panel__header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel__header-right {
+  text-align: right;
+  padding-top: 0.375rem;
+  min-width: 0;
+}
+
+/* Dev-only affordances. Never rendered in the production build, so the e-ink
+   rules do not apply here. */
+.panel__dev {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  background: #000;
+  color: #fff;
+  font-family: var(--font-text);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.panel__dev button {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: #fff;
   background: transparent;
-  position: relative;
-  z-index: 1;
+  border: 0;
+  border-left: 1px solid #fff;
+  padding: 0.375rem 0.625rem;
+  cursor: pointer;
+}
+
+.panel__dev button:first-child {
+  border-left: 0;
 }
