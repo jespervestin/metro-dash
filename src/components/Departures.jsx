@@ -87,7 +87,9 @@ export default function Departures({ state, loading, error }) {
   }
 
   if (state.kind === 'missed') {
-    const c = state.catchable;
+    // Nothing reachable on foot at all. Describe the soonest departure so the
+    // reader can see what they are missing rather than just a bare refusal.
+    const f = state.first;
     return (
       <>
         <section className="metro__hero metro__hero--missed">
@@ -97,14 +99,10 @@ export default function Departures({ state, loading, error }) {
             <br />
             ej gå
           </p>
-          {c && (
-            <div className="metro__detail">
-              <span className="metro__detail-strong">Nästa {formatClock(c.iso)}</span>
-              <span className="metro__detail-muted">
-                Gå om {c.minutes - WALK_MINUTES} min
-              </span>
-            </div>
-          )}
+          <div className="metro__detail">
+            <span className="metro__detail-strong">Avgång {formatClock(f.iso)}</span>
+            <span className="metro__detail-muted">Tåget går {f.minutes} min</span>
+          </div>
         </section>
         <div className="metro__list-wrap">
           <div className="metro__band metro__band--plain">NÄSTA AVGÅNGAR</div>
@@ -114,20 +112,33 @@ export default function Departures({ state, loading, error }) {
     );
   }
 
-  // kind === 'go'
-  const f = state.first;
+  // kind === 'go' — anchored on the train you can actually reach.
+  const t = state.target;
+  const leaveIn = t.minutes - WALK_MINUTES;
   return (
     <>
       <section className="metro__hero">
         <SectionLabel />
+        {/* Always two lines: a one-line hero would shorten the block and open
+            a hole above the bottom-pinned calendar. */}
         <p className="metro__answer">
-          Gå om
-          <br />
-          {f.minutes - WALK_MINUTES} min
+          {leaveIn === 0 ? (
+            <>
+              Gå
+              <br />
+              nu
+            </>
+          ) : (
+            <>
+              Gå om
+              <br />
+              {leaveIn} min
+            </>
+          )}
         </p>
         <div className="metro__detail">
-          <span className="metro__detail-strong">Avgång {formatClock(f.iso)}</span>
-          <span className="metro__detail-muted">Tåget går {f.minutes} min</span>
+          <span className="metro__detail-strong">Avgång {formatClock(t.iso)}</span>
+          <span className="metro__detail-muted">Tåget går {t.minutes} min</span>
         </div>
       </section>
       <div className="metro__band">NÄSTA AVGÅNGAR</div>

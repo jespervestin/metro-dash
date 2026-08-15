@@ -92,24 +92,37 @@ function mockDeparture(designation, destination, minutes, delay = 0) {
    past, making every scenario collapse to "Inga avgångar". */
 export const DEV_DEPARTURE_SCENARIOS = [
   {
+    // The everyday case on this line: ~10 minute headways, so the soonest
+    // train is usually just inside the walk time and the panel anchors on
+    // the one after it.
     label: 'Gå om',
     get departures() {
       return [
-        mockDeparture('10', 'T-Centralen', 19),
-        mockDeparture('11', 'Kungsträdgården', 27, 2),
-        mockDeparture('10', 'T-Centralen', 35),
-        mockDeparture('10', 'T-Centralen', 43),
+        mockDeparture('10', 'T-Centralen', 4),
+        mockDeparture('11', 'Kungsträdgården', 14, 2),
+        mockDeparture('10', 'T-Centralen', 24),
+        mockDeparture('10', 'T-Centralen', 34),
       ];
     },
   },
   {
-    label: 'Hinner ej gå',
+    // Countdown at zero. The .1 offsets the milliseconds that elapse between
+    // building this and deriving from it, which would otherwise floor to 9
+    // and make the train uncatchable.
+    label: 'Gå nu',
     get departures() {
       return [
-        mockDeparture('10', 'T-Centralen', 5),
-        mockDeparture('11', 'Kungsträdgården', 13, 2),
-        mockDeparture('10', 'T-Centralen', 21),
+        mockDeparture('10', 'T-Centralen', 10.1),
+        mockDeparture('11', 'Kungsträdgården', 20.1),
+        mockDeparture('10', 'T-Centralen', 30.1),
       ];
+    },
+  },
+  {
+    // Nothing reachable on foot — the last train of the night.
+    label: 'Hinner ej gå',
+    get departures() {
+      return [mockDeparture('10', 'T-Centralen', 3)];
     },
   },
   {

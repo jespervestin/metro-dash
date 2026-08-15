@@ -1,9 +1,17 @@
 /**
- * Derives which panel state the metro block should render, per the design:
+ * Derives which panel state the metro block should render:
  *
- *   no departures            -> 'none'   (black notice, clock takes the top slot)
- *   soonest is < WALK away   -> 'missed' ("Hinner ej gå", hero is the black mass)
- *   otherwise                -> 'go'     ("Gå om X min")
+ *   no departures at all      -> 'none'   (black notice, clock takes the top slot)
+ *   something is catchable    -> 'go'     ("Gå om X min", anchored on that train)
+ *   nothing is catchable      -> 'missed' ("Hinner ej gå", hero is the black mass)
+ *
+ * The hero anchors on the first departure you can actually reach on foot, not
+ * on the soonest one. Anchoring on the soonest made the panel useless on this
+ * line: with ~10 minute headways and a 10 minute walk, the next train is
+ * almost always just inside the walk time, so it sat on "Hinner ej gå"
+ * permanently while the answer the reader wants — when to leave for the train
+ * they *can* make — was never shown. 'missed' is now the genuinely rare case
+ * of nothing reachable left, e.g. the last train of the night.
  *
  * Kept as a pure function so the three states can be reasoned about and
  * exercised without rendering.
@@ -39,14 +47,11 @@ export function deriveMetro(departures, now = Date.now()) {
 
   if (rows.length === 0) return { kind: 'none', rows: [] };
 
-  const first = rows[0];
-  if (first.minutes < WALK_MINUTES) {
-    // The soonest train is unreachable on foot. The supporting lines should
-    // describe the next one you actually *can* make — which may not exist if
-    // every listed departure is within the walk time.
-    const catchable = rows.find((r) => r.minutes >= WALK_MINUTES) || null;
-    return { kind: 'missed', rows, first, catchable };
-  }
+  // The train the reader should actually plan around: the soonest one still
+  // far enough out to walk to.
+  const target = rows.find((r) => r.minutes >= WALK_MINUTES) || null;
+  if (target) return { kind: 'go', rows, target };
 
-  return { kind: 'go', rows, first };
+  // Every listed departure is inside the walk time — nothing left to catch.
+  return { kind: 'missed', rows, first: rows[0] };
 }
